@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="view_leave_request_type_tree" model="ir.ui.view">
+        <field name="name">leave.request.type.tree</field>
+        <field name="model">leave.request.type</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="description"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_leave_request_type_form" model="ir.ui.view">
+        <field name="name">leave.request.type.form</field>
+        <field name="model">leave.request.type</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                        </group>
+
+                        <group>
+                            <field name="description"/>
+                        </group>
+                    </group>
+                </sheet>
+
+                 <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids" options="{'post_refresh': 'recipients'}"/>
+                </div>
+
+            </form>
+        </field>
+    </record>
+
+    <record id="action_leave_request_type" model="ir.actions.act_window">
+        <field name="name">Leaves Of Types</field>
+        <field name="res_model">leave.request.type</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_leave_request_root"
+              sequence="0"
+              name="Leave Request Management"
+              web_icon="leave_request_management,static/description/icon.png" />
+
+    <menuitem id="menu_leave_request_type"
+              name="Types Of Leaves"
+              sequence="2"
+              parent="menu_leave_request_root"
+              action="action_leave_request_type"/>
+
+</odoo>

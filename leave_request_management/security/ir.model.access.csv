@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+acess_types_of_leaves,leave.request.type,model_leave_request_type,,1,0,0,0
+acess_admin_types_of_leaves,leave.request.type,model_leave_request_type,group_leave_request_admin,1,1,1,1
+acess_leave_request,leave.request,model_leave_request,,1,1,1,1

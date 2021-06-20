@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <record id="view_leave_request_filter" model="ir.ui.view">
+        <field name="name">leave.request.select</field>
+        <field name="model">leave.request</field>
+        <field name="arch" type="xml">
+            <search string="Search My Requests">
+                <filter string="My Requests" name="my_request" domain="[('requester', '=', uid)]"/>
+                <filter string="Approved" name="approved" domain="[('state', '=', 'approved')]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_leave_request_tree" model="ir.ui.view">
+        <field name="name">leave.request.tree</field>
+        <field name="model">leave.request</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="request_seq"/>
+                <field name="requester"/>
+                <field name="department"/>
+                <field name="leave_type"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="leave_days_total"/>
+                <field name="leave_reason"/>
+                <field name="supporter"/>
+                <field name="approver"/>
+                <field name="approver_email"/>
+                <field name="state"
+                       decoration-muted="state == 'draft'"
+                       decoration-info="state == 'requested'"
+                       decoration-success="state == 'approved'"
+                       decoration-danger="state == 'rejected'"
+                       widget="badge"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_leave_request_form" model="ir.ui.view">
+        <field name="name">leave.request.form</field>
+        <field name="model">leave.request</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button string="Request" name="action_request" type="object" states="draft" class="oe_highlight"/>
+                    <button string="Approve" name="action_approve" type="object" groups="leave_request_management.group_leave_request_approver"
+                            states="requested" class="oe_highlight"/>
+                    <button string="Reject" name="action_reject" type="object" groups="leave_request_management.group_leave_request_approver"
+                            states="requested" class="oe_highlight"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div name="title" class="oe_title request_title">
+                        <h2 name="header_name">
+                            <field name="request_seq"/>
+                        </h2>
+                    </div>
+                    <group>
+                        <field name="requester" readonly="True"/>
+                        <field name="department" readonly="True"/>
+                    </group>
+
+                    <group>
+                        <field name="leave_type" options="{'no_create_edit': True, 'no_create': True}"/>
+                        <field name="date_from"/>
+                        <field name="date_to"/>
+                        <field name="leave_days_total"/>
+                        <field name="leave_reason"/>
+                        <field name="supporter"/>
+                    </group>
+
+                    <group>
+                        <field name="approver"/>
+                        <field name="approver_email" widget="email"/>
+                    </group>
+
+                </sheet>
+
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids" options="{'post_refresh': 'recipients'}"/>
+                </div>
+
+            </form>
+        </field>
+    </record>
+
+    <record id="action_leave_request" model="ir.actions.act_window">
+        <field name="name">Leave Request</field>
+        <field name="res_model">leave.request</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{"search_default_my_request":'my_request'}</field>
+    </record>
+
+    <menuitem id="menu_leave_request"
+              name="Leave Request"
+              sequence="1"
+              parent="menu_leave_request_root"
+              action="action_leave_request"/>
+
+</odoo>
