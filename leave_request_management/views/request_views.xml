@@ -6,6 +6,7 @@
         <field name="model">leave.request</field>
         <field name="arch" type="xml">
             <search string="Search My Requests">
+                <field name="department"/>
                 <filter string="My Requests" name="my_request" domain="[('requester', '=', uid)]"/>
                 <filter string="Approved" name="approved" domain="[('state', '=', 'approved')]"/>
             </search>
