@@ -6,7 +6,7 @@
         <field name="model">leave.request</field>
         <field name="arch" type="xml">
             <search string="Search My Requests">
-                <field name="department"/>
+                <field name="department" groups="leave_request_management.group_leave_request_admin"/>
                 <filter string="My Requests" name="my_request" domain="[('requester', '=', uid)]"/>
                 <filter string="Approved" name="approved" domain="[('state', '=', 'approved')]"/>
             </search>
@@ -60,7 +60,6 @@
                     </div>
                     <group>
                         <field name="requester" readonly="True"/>
-                        <field name="department" readonly="True"/>
                     </group>
 
                     <group>
@@ -74,7 +73,6 @@
 
                     <group>
                         <field name="approver"/>
-                        <field name="approver_email" widget="email"/>
                     </group>
 
                 </sheet>

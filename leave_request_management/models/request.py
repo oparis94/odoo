@@ -15,18 +15,19 @@ class LeaveRequest(models.Model):
                        index=True, default=lambda self: ('New'))
     requester = fields.Many2one('res.users', 'Requester', required=True,
                                 default=lambda self: self.env.user.id)
+    requester_email = fields.Char('Requester Email', related='requester.login')
     department = fields.Many2one('hr.department', 'Department', required=True,
                                  default=lambda self: self.env.user.department_id)
-    leave_type = fields.Many2one('leave.request.type', 'Leave Type', required=True)
-    date_from = fields.Date('Date From', required=True)
-    date_to = fields.Date('Date To', required=True)
-    leave_days_total = fields.Integer('Leave Days Total', required=True)
+    leave_type = fields.Many2one('leave.request.type', 'Leave Type', required=True, tracking=True)
+    date_from = fields.Date('Date From', required=True, tracking=True)
+    date_to = fields.Date('Date To', required=True, tracking=True)
+    leave_days_total = fields.Integer('Leave Days Total', required=True, tracking=True)
     leave_reason = fields.Text('Leave Reason', required=True)
-    supporter = fields.Many2one('hr.employee', 'Supporter', required=True)
+    supporter = fields.Many2one('hr.employee', 'Supporter')
     approver = fields.Many2one('res.users', 'Approver', required=True)
     approver_email = fields.Char('Approver Email', related='approver.login')
     state = fields.Selection([('draft', 'Draft'), ('requested', 'Requested'), ('approved', 'Approved'), ('rejected', 'Rejected')],
-                             'State', default='draft')
+                             'State', default='draft', tracking=True)
 
     def write(self, vals):
         if any(state == 'approved' for state in set(self.mapped('state'))):
@@ -72,7 +73,13 @@ class LeaveRequest(models.Model):
     def action_approve(self):
         for rec in self:
             rec.state = 'approved'
+        template_id = self.env.ref('leave_request_management.template_leave_approved').id
+        template = self.env['mail.template'].browse(template_id)
+        template.send_mail(self.id, force_send=True)
 
     def action_reject(self):
         for rec in self:
             rec.state = 'rejected'
+        template_id = self.env.ref('leave_request_management.template_leave_rejected').id
+        template = self.env['mail.template'].browse(template_id)
+        template.send_mail(self.id, force_send=True)
